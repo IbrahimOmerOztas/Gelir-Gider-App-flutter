@@ -30,7 +30,7 @@ class StorageService extends GetxService {
         throw Exception("Not supported type");
       }
     } catch (e) {
-      print("veri eklenirken hata olustu: $e");
+      print("yarrrak: $e");
       return false;
     }
   }

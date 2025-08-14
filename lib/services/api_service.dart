@@ -4,7 +4,11 @@ import 'package:get/get_instance/get_instance.dart';
 import 'package:get/state_manager.dart';
 
 abstract class ApiConstants {
-  static const String baseUrl = "";
+  static const String baseUrl = "https://gelir-gider-backend.onrender.com/api";
+  static const String login = "/auth/google";
+  static const String profile = "/auth/profile";
+  static const String categories = "/categories";
+  static const String transactions = "/transactions";
 }
 
 class ApiService extends GetxService {
@@ -45,8 +49,8 @@ class ApiService extends GetxService {
     return this;
   }
 
-  Future<Response> get(
-    String path, {
+  Future<Response> get({
+    required String path,
     Map<String, dynamic>? queryParameters, //zorunlu değil
     Options? options, // zorunlu değil
   }) async {
@@ -62,9 +66,9 @@ class ApiService extends GetxService {
     }
   }
 
-  Future<Response> post(
-    String path,
-    Map<String, dynamic> data, {
+  Future<Response> post({
+    required String path,
+    required Map<String, dynamic> data,
     Map<String, dynamic>? queryParameters, //zorunlu değil
     Options? options, // zorunlu değil
   }) async {

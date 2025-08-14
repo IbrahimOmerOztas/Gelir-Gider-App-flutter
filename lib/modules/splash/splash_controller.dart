@@ -22,6 +22,14 @@ class SplashController extends BaseController {
   }
 
   Future<void> checkTokenandRedirect() async {
+    final token = Get.find<StorageService>().getValue<String>(
+      StorageKeys.userToken,
+    );
+    print("token: $token");
+
+    if (token != "") {
+      await Get.offAllNamed(AppRoutes.HOME);
+    }
     await Get.offAllNamed(AppRoutes.LOGIN);
   }
 }
