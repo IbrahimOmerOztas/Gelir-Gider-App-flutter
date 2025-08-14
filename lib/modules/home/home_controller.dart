@@ -44,5 +44,8 @@ class HomeController extends BaseController {
     }
 
     isLoading = false;
+
+    final token = "ibrahim";
   }
 }
+//ibrahim ömer öztaş
