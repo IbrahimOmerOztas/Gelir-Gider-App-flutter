@@ -7,12 +7,6 @@ import 'package:get/get.dart';
 
 class SplashController extends BaseController {
   @override
-  void onInit() {
-    print("on init Splash controller");
-    super.onInit();
-  }
-
-  @override
   void onReady() async {
     super.onReady();
     await waitForServices();
