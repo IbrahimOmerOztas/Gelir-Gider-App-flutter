@@ -37,8 +37,9 @@ class ApiService extends GetxService {
         },
         onError: (error, handler) async {
           if (error.response?.statusCode == 401) {
-            await _storageService.removeValue(
+            await _storageService.setValue<String>(
               StorageKeys.userToken,
+              "",
             ); // bunun sayesinde beni login ekranına götürüp yeniden login yapıp yeni bir geçerli token almamı sağlar
           }
           return handler.next(error);

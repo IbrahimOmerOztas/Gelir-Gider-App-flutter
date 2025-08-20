@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:gelir_gider_app/routes/app_pages.dart' show AppRoutes;
 import 'package:gelir_gider_app/services/api_service.dart';
 import 'package:gelir_gider_app/services/storage_service.dart';
 import 'package:get/get.dart';
@@ -28,17 +25,24 @@ class AuthService extends GetxService {
     return this;
   }
 
-  Future<void> singInWithGoogle() async {
+  Future<bool> singInWithGoogle() async {
     try {
       await _googleSignIn.signOut();
       //ne olur ne olmaz cikis islemini yap sonucta login yapacam
 
       final GoogleSignInAccount? _googleUser = await _googleSignIn
           .authenticate();
-      if (_googleUser == null) return;
+
+      if (_googleUser == null) return false;
       print("google user: ${_googleUser.toString()}");
 
       final GoogleSignInAuthentication _googleAuth = _googleUser.authentication;
+
+      //google ile sign in işlemi yapınca google bana jwt token yolluyor ben bunu hazırladığım
+      // backend yapısına istek atınca ben authorize yapmış oluyorum ve bana backend token
+      //yolluyor böylece ben artık gönül rahatlığıyla backend e istek atabiliyorum
+
+      print("google tokennnnnnnnnnnnnnnn : ${_googleAuth.idToken}");
 
       final response = await _apiService.post(
         path: ApiConstants.login,
@@ -51,20 +55,26 @@ class AuthService extends GetxService {
           response.data["token"],
         );
 
-        Get.offAllNamed(AppRoutes.HOME);
         print("JWT TOKEN");
         print(response.data["token"]);
         print("JWT TOKEN");
+        return true;
       } else {
         await _googleSignIn.disconnect();
+        return false;
       }
     } catch (e) {
       print("error: $e");
+      return false;
     }
   }
 
   Future<void> signOut() async {
-    await _googleSignIn.signOut();
-    await _storageService.setValue<String>(StorageKeys.userToken, "");
+    try {
+      await _googleSignIn.signOut();
+      await _storageService.setValue<String>(StorageKeys.userToken, "");
+    } catch (e) {
+      print("sign out error : $e");
+    }
   }
 }

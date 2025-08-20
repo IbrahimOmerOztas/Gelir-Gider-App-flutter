@@ -30,7 +30,7 @@ class StorageService extends GetxService {
         throw Exception("Not supported type");
       }
     } catch (e) {
-      print("yarrrak: $e");
+      print("error: $e");
       return false;
     }
   }
@@ -48,7 +48,7 @@ class StorageService extends GetxService {
     }
   }
 
-  Future<bool> removeValue(String key) async {
+  Future<bool> remove(String key) async {
     try {
       return await _preferences.remove(key);
     } catch (e) {

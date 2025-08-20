@@ -1,4 +1,5 @@
 import 'package:gelir_gider_app/core/base_controller.dart';
+import 'package:gelir_gider_app/routes/app_pages.dart';
 import 'package:gelir_gider_app/services/auth_service.dart';
 import 'package:gelir_gider_app/services/storage_service.dart';
 import 'package:get/get.dart';
@@ -24,6 +25,12 @@ class LoginController extends BaseController {
   }
 
   googleIleGirisYap() async {
-    await _authService.singInWithGoogle();
+    var isTrue =
+        await _authService.singInWithGoogle() &&
+        _storageService.getValue(StorageKeys.userToken) != "";
+
+    if (isTrue) {
+      Get.offAllNamed(AppRoutes.HOME);
+    }
   }
 }

@@ -17,7 +17,7 @@ class SplashController extends BaseController {
     while (!Get.isRegistered<StorageService>() &&
         !Get.isRegistered<ApiService>() &&
         !Get.isRegistered<AuthService>()) {
-      await Future.delayed(const Duration(milliseconds: 1500));
+      await Future.delayed(const Duration(milliseconds: 300));
     }
   }
 
@@ -25,7 +25,6 @@ class SplashController extends BaseController {
     final token = Get.find<StorageService>().getValue<String>(
       StorageKeys.userToken,
     );
-    print("token: $token");
 
     if (token != "") {
       await Get.offAllNamed(AppRoutes.HOME);

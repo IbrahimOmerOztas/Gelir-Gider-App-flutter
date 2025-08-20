@@ -8,41 +8,79 @@ class HomePage extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          children: [
-            const SizedBox(height: 30),
-            const Text("HomePage"),
-            ElevatedButton(
-              onPressed: () async {
-                await controller.googleCikisYap();
-              },
-              child: const Text("Sign Out"),
-            ),
-            const SizedBox(height: 20),
+      appBar: AppBar(
+        title: const Text("Home"),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await controller.googleCikisYap();
+            },
+            icon: const Icon(Icons.exit_to_app),
+          ),
+        ],
+      ),
+      body: Obx(() {
+        if (controller.isLoading) {
+          // Yükleniyorsa sadece loading spinner göster
+          return const Center(child: CircularProgressIndicator());
+        }
+        final user = controller.user.value;
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (user.profilePhoto != null) Image.network(user.profilePhoto!),
+              SizedBox(height: 10),
+              Text(user.email ?? ''),
+              SizedBox(height: 10),
+              Text(user.firstName ?? ''),
+              SizedBox(height: 10),
+              Text(user.lastName ?? ''),
+              SizedBox(height: 10),
+            ],
+          ),
+        );
+      }),
+    );
+  }
+}
 
-            // Expanded ile sarmala
-            Expanded(
-              child: Obx(() {
-                // Eğer kategori boşsa bilgi gösterebilirsin
-                if (controller.categories.isEmpty) {
-                  return const Center(child: Text("No categories found"));
-                }
+class CategoriesView extends StatelessWidget {
+  const CategoriesView({super.key, required this.controller});
 
-                return ListView.builder(
-                  itemCount: controller.categories.length,
-                  itemBuilder: (context, index) {
-                    final category = controller.categories[index];
-                    return ListTile(
-                      title: Text(category.name ?? 'Unnamed Category'),
-                      // İstersen icon veya başka detaylar ekleyebilirsin
-                    );
-                  },
-                );
-              }),
-            ),
-          ],
-        ),
+  final HomeController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        children: [
+          const SizedBox(height: 30),
+          const Text("HomePage"),
+          ElevatedButton(
+            onPressed: () async {
+              await controller.googleCikisYap();
+            },
+            child: const Text("Sign Out"),
+          ),
+          const SizedBox(height: 20),
+
+          // Expanded ile sarmala
+          Expanded(
+            child: controller.categories.isEmpty
+                ? const Center(child: Text("No categories found"))
+                : ListView.builder(
+                    itemCount: controller.categories.length,
+                    itemBuilder: (context, index) {
+                      final category = controller.categories[index];
+                      return ListTile(
+                        title: Text(category.name ?? 'Unnamed Category'),
+                      );
+                    },
+                  ),
+          ),
+        ],
       ),
     );
   }
