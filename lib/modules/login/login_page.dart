@@ -13,11 +13,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final token = controller.userToken.value;
-      Get.snackbar("Token", token); // Scaffold varsa güvenlidir
-    });
   }
 
   @override

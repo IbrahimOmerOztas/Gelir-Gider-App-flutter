@@ -4,20 +4,24 @@ import 'package:gelir_gider_app/models/user.dart';
 import 'package:gelir_gider_app/routes/app_pages.dart';
 import 'package:gelir_gider_app/services/api_service.dart';
 import 'package:gelir_gider_app/services/auth_service.dart';
+import 'package:gelir_gider_app/services/storage_service.dart';
 import 'package:get/get.dart';
 
 class HomeController extends BaseController {
   late final AuthService _authService;
   late final ApiService _apiService;
+  late final StorageService _storageService;
 
   RxList<Category> categories = <Category>[].obs;
-  Rx<User> user = User().obs;
+  Rx<User?> user = User().obs;
+  Rx<String> token = "".obs;
 
   @override
   void onInit() {
     super.onInit();
     _authService = Get.find<AuthService>();
     _apiService = Get.find<ApiService>();
+    _storageService = Get.find<StorageService>();
   }
 
   @override
@@ -55,15 +59,8 @@ class HomeController extends BaseController {
 
   Future<void> getUserProfile() async {
     isLoading = true;
-    final response = await _apiService.get(path: ApiConstants.profile);
-
-    if (response.statusCode != 200) {
-      print("response status code : ${response.statusCode}");
-    }
-
-    final userJson = response.data;
-
-    user.value = User.fromJson(userJson);
+    user.value = await _authService.getProfileInfo();
+    token.value = _storageService.getValue<String>(StorageKeys.userToken)!;
     isLoading = false;
   }
 }

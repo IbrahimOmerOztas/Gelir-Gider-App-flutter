@@ -25,8 +25,10 @@ class SplashController extends BaseController {
     final token = Get.find<StorageService>().getValue<String>(
       StorageKeys.userToken,
     );
+    print("tokeeenn: $token");
+    final isAuthenticed = await Get.find<AuthService>().isAuthenticated();
 
-    if (token != "") {
+    if (isAuthenticed) {
       await Get.offAllNamed(AppRoutes.HOME);
     }
     await Get.offAllNamed(AppRoutes.LOGIN);

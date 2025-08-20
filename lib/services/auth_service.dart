@@ -1,3 +1,4 @@
+import 'package:gelir_gider_app/models/user.dart';
 import 'package:gelir_gider_app/services/api_service.dart';
 import 'package:gelir_gider_app/services/storage_service.dart';
 import 'package:get/get.dart';
@@ -12,6 +13,8 @@ class AuthService extends GetxService {
   late final StorageService _storageService;
   late final ApiService _apiService;
   late final GoogleSignIn _googleSignIn;
+
+  final Rx<User?> currentUser = Rx<User?>(null);
 
   Future<AuthService> init() async {
     _storageService = Get.find<StorageService>();
@@ -42,12 +45,14 @@ class AuthService extends GetxService {
       // backend yapısına istek atınca ben authorize yapmış oluyorum ve bana backend token
       //yolluyor böylece ben artık gönül rahatlığıyla backend e istek atabiliyorum
 
-      print("google tokennnnnnnnnnnnnnnn : ${_googleAuth.idToken}");
+      //print("google tokennnnnnnnnnnnnnnn : ${_googleAuth.idToken}");
 
       final response = await _apiService.post(
         path: ApiConstants.login,
         data: {"idToken": _googleAuth.idToken},
       );
+
+      //burada autherization için post isteği attık response olarak token bekliyoruz
 
       if (response.statusCode == 200) {
         await _storageService.setValue<String>(
@@ -56,6 +61,7 @@ class AuthService extends GetxService {
         );
 
         print("JWT TOKEN");
+        currentUser.value = User.fromJson(response.data["user"]);
         print(response.data["token"]);
         print("JWT TOKEN");
         return true;
@@ -72,9 +78,39 @@ class AuthService extends GetxService {
   Future<void> signOut() async {
     try {
       await _googleSignIn.signOut();
+      currentUser.value = null;
       await _storageService.setValue<String>(StorageKeys.userToken, "");
     } catch (e) {
       print("sign out error : $e");
+    }
+  }
+
+  Future<User?> getProfileInfo() async {
+    try {
+      final response = await _apiService.get(path: ApiConstants.profile);
+      if (response.statusCode != 200) {
+        return null;
+      }
+
+      final user = User.fromJson(response.data);
+
+      return user;
+    } catch (e) {
+      throw Exception("Bir hata olustu: $e");
+    }
+  }
+
+  Future<bool> isAuthenticated() async {
+    try {
+      final token = _storageService.getValue<String>(StorageKeys.userToken);
+      final user = await getProfileInfo();
+      if (token == "" || user == null) return false;
+
+      return true;
+    } catch (e) {
+      print("error: $e");
+
+      return false;
     }
   }
 }
