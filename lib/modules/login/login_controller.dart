@@ -18,7 +18,9 @@ class LoginController extends BaseController {
   }
 
   googleIleGirisYap() async {
-    await _authService.singInWithGoogle();
-    Get.offAllNamed(AppRoutes.HOME);
+    final isSuccess = await _authService.singInWithGoogle();
+    if (isSuccess) {
+      Get.offAllNamed(AppRoutes.HOME);
+    }
   }
 }

@@ -24,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
           onPressed: () async {
             await controller.googleIleGirisYap();
           },
-          child: Row(children: [Icon(Icons.login), Text("Talha")]),
+          child: Text("Google İle Giriş Yap"),
         ),
       ),
     );

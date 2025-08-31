@@ -15,6 +15,7 @@ class AppBindings extends Bindings {
 
     await Get.putAsync<ApiService>(() => ApiService().init());
     await Get.putAsync<AuthService>(() => AuthService().init());
+    
   }
 }
  // neden önce StorageService i yazdım sonra ApiService i yazdım => çünkü apiService içeririnsde storageService uygulaması var bu yüzden önce storageService initilaze 

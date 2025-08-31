@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:gelir_gider_app/core/base_controller.dart';
 import 'package:gelir_gider_app/models/category.dart';
 import 'package:gelir_gider_app/models/user.dart';
@@ -16,12 +18,18 @@ class HomeController extends BaseController {
   Rx<User?> user = User().obs;
   Rx<String> token = "".obs;
 
+  Rx<int> currentIndex = 0.obs;
+
   @override
   void onInit() {
     super.onInit();
     _authService = Get.find<AuthService>();
     _apiService = Get.find<ApiService>();
     _storageService = Get.find<StorageService>();
+  }
+
+  void changeIndex(int index) {
+    currentIndex.value = index;
   }
 
   @override
@@ -39,7 +47,7 @@ class HomeController extends BaseController {
     await Get.offAllNamed(AppRoutes.LOGIN);
   }
 
-  /*Future<void> getCategories() async {
+  Future<void> getCategories() async {
     isLoading = true; //BaseController dan kalıtımla bu yapıyı almış olduk.
 
     final response = await _apiService.get(path: ApiConstants.categories);
@@ -53,9 +61,7 @@ class HomeController extends BaseController {
     }
 
     isLoading = false;
-
-    
-  }*/
+  }
 
   Future<void> getUserProfile() async {
     isLoading = true;

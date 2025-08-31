@@ -8,6 +8,13 @@ class SplashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: CircularProgressIndicator()));
+    return Scaffold(
+      body: Center(
+        child: CircleAvatar(
+          radius: 40,
+          backgroundImage: AssetImage("assets/images/formula.png"),
+        ),
+      ),
+    );
   }
 }
